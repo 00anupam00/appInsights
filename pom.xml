@@ -9,9 +9,9 @@
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>com.zaloni.hack</groupId>
-	<artifactId>capacityPlanning</artifactId>
+	<artifactId>appInsights</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>capacityPlanning</name>
+	<name>appInsights</name>
 	<description>Demo project for Spring Boot</description>
 
 	<properties>

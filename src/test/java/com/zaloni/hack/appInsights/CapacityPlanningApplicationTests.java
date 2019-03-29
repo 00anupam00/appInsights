@@ -1,4 +1,4 @@
-package com.zaloni.hack.capacityPlanning;
+package com.zaloni.hack.appInsights;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
