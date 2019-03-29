@@ -1,0 +1,27 @@
+{
+  "zdp_feature": "Workflow",
+  "operation_details": {
+    "operation": "EXECUTE",
+    "operator": "Pancham",
+    "operatedOn": "2019-03-27 12:30:20",
+    "modifiedBy": "Sunayan",
+    "modifiedOn": "2019-03-28 01:30:11",
+    "impersonated": false,
+    "impersonatedUser": null,
+    "clusters": []
+  },
+  "actions": [{
+    "actionName": "hive action",
+    "actionType": "HIVE",
+    "description": "",
+    "additionalInfo": {
+      "key1": "value1"
+    }
+  }, {
+    "actionName": "ingestion",
+    "actionType": "ingestion-warden",
+    "description": "",
+    "additionalInfo": {}
+  }],
+  "audit": {}
+}
