@@ -7,10 +7,10 @@ import java.util.StringJoiner;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class Action {
 
-    private int actionId;
+    private String actionId;
     private String actionName;
     private String status;
-    private int pairConnectioId;
+    private int pairConnectionId;
     private String pairConnectionName;
     private int entityId;
     private String entityName;
@@ -18,14 +18,12 @@ public class Action {
     private String actionType;
     private String disabled;
     private String skipped;
-    private String modifiedOn;
-    private String modifiedBy;
 
-    public int getActionId() {
+    public String getActionId() {
         return actionId;
     }
 
-    public void setActionId(int actionId) {
+    public void setActionId(String actionId) {
         this.actionId = actionId;
     }
 
@@ -45,12 +43,12 @@ public class Action {
         this.status = status;
     }
 
-    public int getPairConnectioId() {
-        return pairConnectioId;
+    public int getPairConnectionId() {
+        return pairConnectionId;
     }
 
-    public void setPairConnectioId(int pairConnectioId) {
-        this.pairConnectioId = pairConnectioId;
+    public void setPairConnectionId(int pairConnectionId) {
+        this.pairConnectionId = pairConnectionId;
     }
 
     public String getPairConnectionName() {
@@ -109,29 +107,13 @@ public class Action {
         this.skipped = skipped;
     }
 
-    public String getModifiedOn() {
-        return modifiedOn;
-    }
-
-    public void setModifiedOn(String modifiedOn) {
-        this.modifiedOn = modifiedOn;
-    }
-
-    public String getModifiedBy() {
-        return modifiedBy;
-    }
-
-    public void setModifiedBy(String modifiedBy) {
-        this.modifiedBy = modifiedBy;
-    }
-
     @Override
     public String toString() {
         return new StringJoiner(", ", Action.class.getSimpleName() + "[", "]")
                 .add("actionId=" + actionId)
                 .add("actionName='" + actionName + "'")
                 .add("status='" + status + "'")
-                .add("pairConnectioId=" + pairConnectioId)
+                .add("pairConnectionId=" + pairConnectionId)
                 .add("pairConnectionName='" + pairConnectionName + "'")
                 .add("entityId=" + entityId)
                 .add("entityName='" + entityName + "'")
@@ -139,8 +121,6 @@ public class Action {
                 .add("actionType='" + actionType + "'")
                 .add("disabled='" + disabled + "'")
                 .add("skipped='" + skipped + "'")
-                .add("modifiedOn='" + modifiedOn + "'")
-                .add("modifiedBy='" + modifiedBy + "'")
                 .toString();
     }
 }

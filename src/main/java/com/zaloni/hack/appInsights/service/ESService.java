@@ -31,4 +31,8 @@ public class ESService {
        return savedInsight;
    }
 
+   public void deleteIndex(Class indexName){
+        this.elasticsearchTemplate.deleteIndex(indexName);
+   }
+
 }

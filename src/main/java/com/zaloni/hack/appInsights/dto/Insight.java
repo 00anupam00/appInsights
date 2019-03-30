@@ -9,15 +9,16 @@ import org.springframework.data.elasticsearch.annotations.FieldType;
 import java.util.List;
 import java.util.StringJoiner;
 
-@Document(indexName = "hack19", type = "app_insights")
+@Document(indexName = "insights", type = "app_insights")
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class Insight {
 
     @Id
+    private String id;
+    @Field
     private String insightId;
-
     @Field(type = FieldType.Text)
-    private ZdpFeature zdpFeature;
+    private ZdpFeature zdpFeature= ZdpFeature.WORKFLOW;
     @Field
     private int instanceId;
     @Field
@@ -40,8 +41,9 @@ public class Insight {
     private boolean impersonation;
     @Field
     private String impersonatedUser;
-    @Field(type = FieldType.Nested, includeInParent = true)
-    private User user;
+
+    private String executedBy;
+
     @Field(type = FieldType.Nested, includeInParent = true)
     private List<Action> actions;
     @Field(type = FieldType.Nested, includeInParent = true)
@@ -151,12 +153,12 @@ public class Insight {
         this.impersonatedUser = impersonatedUser;
     }
 
-    public User getUser() {
-        return user;
+    public String getExecutedBy() {
+        return executedBy;
     }
 
-    public void setUser(User user) {
-        this.user = user;
+    public void setExecutedBy(String executedBy) {
+        this.executedBy = executedBy;
     }
 
     public List<Action> getActions() {
@@ -191,7 +193,7 @@ public class Insight {
                 .add("totalExectuionTime='" + totalExectuionTime + "'")
                 .add("impersonation=" + impersonation)
                 .add("impersonatedUser='" + impersonatedUser + "'")
-                .add("user=" + user)
+                .add("executedBy='" + executedBy + "'")
                 .add("actions=" + actions)
                 .add("cluster=" + cluster)
                 .toString();
