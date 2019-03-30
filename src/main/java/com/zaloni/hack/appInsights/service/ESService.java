@@ -3,6 +3,7 @@ package com.zaloni.hack.appInsights.service;
 import com.zaloni.hack.appInsights.config.ESConfiguration;
 import com.zaloni.hack.appInsights.dto.Insight;
 import com.zaloni.hack.appInsights.repository.InsightRepository;
+import org.elasticsearch.common.settings.Settings;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.elasticsearch.core.ElasticsearchTemplate;
 import org.springframework.stereotype.Service;
@@ -21,7 +22,13 @@ public class ESService {
     }*/
 
     public Insight save(Insight insight){
-       return insightRepository.save(insight);
+        Insight savedInsight= new Insight();
+        boolean indexExists= this.elasticsearchTemplate.indexExists(Insight.class)
+                || this.elasticsearchTemplate.createIndex(Insight.class);
+        if(indexExists){
+            savedInsight= insightRepository.save(insight);
+        }
+       return savedInsight;
    }
 
 }

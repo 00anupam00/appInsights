@@ -1,27 +1,80 @@
 {
-  "zdp_feature": "Workflow",
-  "operation_details": {
-    "operation": "EXECUTE",
-    "operator": "Pancham",
-    "operatedOn": "2019-03-27 12:30:20",
-    "modifiedBy": "Sunayan",
-    "modifiedOn": "2019-03-28 01:30:11",
-    "impersonated": false,
-    "impersonatedUser": null,
-    "clusters": []
+  "insightId": "123e4567-e89b-12d3-a456-556642440000",
+  "zdpFeature":"WORKFLOW",
+  "instanceId": 1,
+  "wfId": "",
+  "wfName": "",
+  "projectId": 1,
+  "logTime": "",
+  "status": "SUCCESS",
+  "startTime": "",
+  "endTime": "",
+  "totalExectuionTime": "",
+  "impersonation": false,
+  "impersonatedUser": null,
+  "user": {
+    "userId": "",
+    "userName": "",
+    "userPermission": [
+      {
+        "modulePermissionId": "",
+        "permissionPrettyName": "",
+        "permissionTechnicalName": "",
+        "description": "",
+        "permissionType": "",
+        "isGlobal": false
+      }
+    ]
   },
-  "actions": [{
-    "actionName": "hive action",
-    "actionType": "HIVE",
-    "description": "",
-    "additionalInfo": {
-      "key1": "value1"
+  "actions": [
+    {
+      "actionId": "",
+      "actionName": "",
+      "status": "",
+      "pairConnectioId": "",
+      "pairConnectionName": "",
+      "EntityId": "",
+      "EntityName": "",
+      "EntityVersion": "",
+      "actionType": "",
+      "disabled": "",
+      "skipped": "",
+      "modifiedOn": "2019-03-17T00:00:07.792Z",
+      "modifiedBy": "pancham"
+    },{
+      "actionId": "",
+      "actionName": "",
+      "status": "",
+      "pairConnectioId": "",
+      "pairConnectionName": "",
+      "EntityId": "",
+      "EntityName": "",
+      "EntityVersion": "",
+      "actionType": "",
+      "disabled": "",
+      "skipped": "",
+      "modifiedOn": "2019-03-18T00:00:07.792Z",
+      "modifiedBy": "sunayan"
+    },{
+      "actionId": "",
+      "actionName": "",
+      "status": "",
+      "pairConnectioId": "",
+      "pairConnectionName": "",
+      "EntityId": "",
+      "EntityName": "",
+      "EntityVersion": "",
+      "actionType": "",
+      "disabled": "",
+      "skipped": "",
+      "modifiedOn": "2019-03-20T00:00:07.792Z",
+      "modifiedBy": "anupam"
     }
-  }, {
-    "actionName": "ingestion",
-    "actionType": "ingestion-warden",
-    "description": "",
-    "additionalInfo": {}
-  }],
-  "audit": {}
+  ],
+  "cluster": [
+    {
+      "clusterId": "",
+      "clusterName": ""
+    }
+  ]
 }

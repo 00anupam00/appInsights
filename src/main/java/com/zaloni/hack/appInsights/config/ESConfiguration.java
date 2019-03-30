@@ -38,7 +38,7 @@ public class ESConfiguration {
     public Client client() throws Exception {
         Settings elasticsearchSettings = Settings.builder()
                 .put("client.transport.sniff", true)
-                .put("path.home", elasticsearchHome)
+                //.put("path.home", elasticsearchHome)
                 .put("cluster.name", clusterName).build();
         TransportClient client = new PreBuiltTransportClient(elasticsearchSettings);
         client.addTransportAddress(new TransportAddress(InetAddress.getByName(hostname), port));
