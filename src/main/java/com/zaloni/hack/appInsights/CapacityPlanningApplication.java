@@ -1,18 +1,14 @@
 package com.zaloni.hack.appInsights;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.zaloni.hack.appInsights.dto.Insight;
-import com.zaloni.hack.appInsights.service.DocumentGenerator;
+import com.zaloni.hack.appInsights.service.DocGenService;
 import com.zaloni.hack.appInsights.service.ESService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
-import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.scheduling.annotation.Scheduled;
-
-import java.io.File;
 
 @SpringBootApplication
 public class CapacityPlanningApplication implements ApplicationRunner {
@@ -21,7 +17,7 @@ public class CapacityPlanningApplication implements ApplicationRunner {
     ESService esService;
 
     @Autowired
-    DocumentGenerator docGen;
+    DocGenService docGen;
 
 	public static void main(String[] args) {SpringApplication.run(CapacityPlanningApplication.class, args);}
 
@@ -47,7 +43,7 @@ public class CapacityPlanningApplication implements ApplicationRunner {
         System.out.println("Started analysing zdp insights...");
 	    //Call the zdp and make the Insight Object.
         //Sync to ES.
-//        DocumentGenerator docGen = new DocumentGenerator();
+//        DocGenService docGen = new DocGenService();
         try{
             Insight insight= docGen.getEditLogWFExecuteEntries("http://192.168.1.36:9090", 20, "", "");
             esService.save(insight);

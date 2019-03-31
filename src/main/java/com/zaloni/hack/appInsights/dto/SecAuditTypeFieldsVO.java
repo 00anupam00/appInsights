@@ -8,7 +8,6 @@ import org.springframework.data.elasticsearch.annotations.FieldType;
 /**
  * 
  */
-@Document(indexName = "audit", type = "audittrail")
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class SecAuditTypeFieldsVO implements java.io.Serializable {
 

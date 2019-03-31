@@ -19,7 +19,7 @@ import java.util.List;
 import java.util.Map;
 
 @Service
-public class DocumentGenerator {
+public class DocGenService {
 
     public Insight getEditLogWFExecuteEntries(String url,int numOfEntries, String startTime, String endTime) throws Exception {
         try(FileWriter fw = new FileWriter("testout.txt")) {
@@ -161,7 +161,7 @@ public class DocumentGenerator {
     }
 
   /*  public static void main(String[] args) throws Exception {
-        DocumentGenerator docGen = new DocumentGenerator();
+        DocGenService docGen = new DocGenService();
         docGen.getEditLogWFExecuteEntries("http://192.168.1.36:9090", 20, "", "");
         //docGen.formatEntityName(null, "ENTITY(10.2)");
     }*/

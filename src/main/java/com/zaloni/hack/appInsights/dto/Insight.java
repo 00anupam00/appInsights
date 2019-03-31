@@ -14,9 +14,8 @@ import java.util.StringJoiner;
 public class Insight {
 
     @Id
-    private String id;
-    @Field
-    private String insightId;
+    private Long insightId;
+
     @Field(type = FieldType.Text)
     private ZdpFeature zdpFeature= ZdpFeature.WORKFLOW;
     @Field
@@ -49,11 +48,11 @@ public class Insight {
     @Field(type = FieldType.Nested, includeInParent = true)
     private List<Cluster> cluster;
 
-    public String getInsightId() {
+    public Long getInsightId() {
         return insightId;
     }
 
-    public void setInsightId(String insightId) {
+    public void setInsightId(Long insightId) {
         this.insightId = insightId;
     }
 

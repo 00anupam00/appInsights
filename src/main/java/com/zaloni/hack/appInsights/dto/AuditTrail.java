@@ -11,7 +11,6 @@ import org.springframework.data.elasticsearch.annotations.*;
 
 import java.util.List;
 
-@Document(indexName="audit", type="audittrail")
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class AuditTrail {
 
