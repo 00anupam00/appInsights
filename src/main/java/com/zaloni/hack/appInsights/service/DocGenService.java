@@ -6,6 +6,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mashape.unirest.http.HttpResponse;
 import com.mashape.unirest.http.Unirest;
 import com.mashape.unirest.http.exceptions.UnirestException;
+import com.zaloni.hack.appInsights.constants.ZDPUrls;
 import com.zaloni.hack.appInsights.dto.*;
 import com.zaloni.hack.appInsights.util.JSONAPIResponse;
 import org.joda.time.DateTime;
@@ -19,18 +20,18 @@ import java.util.List;
 import java.util.Map;
 
 @Service
-public class DocGenService {
+public class DocGenService implements ZDPUrls {
 
     public Insight getEditLogWFExecuteEntries(String url,int numOfEntries, String startTime, String endTime) throws Exception {
         try(FileWriter fw = new FileWriter("testout.txt")) {
-            HttpResponse<String> loginResponse = Unirest.post(url + "/bedrock-app/services/rest/login")
+            HttpResponse<String> loginResponse = Unirest.post(url + ZDP_LOGIN_URL)
                     .header("Content-Type", "application/json")
                     .header("cache-control", "no-cache")
                     .header("Postman-Token", "945ac112-faec-4935-856d-aa9f1c11190d")
                     .body("{\n\t\"username\":\"admin\",\n\t\"password\":\"admin\"\n}")
                     .asString();
 
-            HttpResponse<String> rawResponse = Unirest.post(url + "/bedrock-app/services/rest/admin/auditTypes/log/search")
+            HttpResponse<String> rawResponse = Unirest.post(url + ZDP_AUDIT_LOG_URLS)
                     .header("Content-Type", "application/json")
                     .header("cache-control", "no-cache")
                     .header("Postman-Token", "a4ab4067-8650-4d5b-91b9-c496bd267bce")
