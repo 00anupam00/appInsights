@@ -61,7 +61,7 @@ public class DocGenService {
                 }
 
                 //fetch Main WF
-                Insight insight = fetchWFDetail(url, wfInstanceId, projectId, logTime.toString());
+                Insight insight = fetchWFDetail(url, wfInstanceId, projectId, logTime.getMillis());
                 if (insight == null) {
                     continue;
                 }
@@ -79,7 +79,7 @@ public class DocGenService {
         return new Insight();
     }
 
-    private Insight fetchWFDetail(String url, int instanceId, int projectId, String logTime) throws UnirestException, IOException {
+    private Insight fetchWFDetail(String url, int instanceId, int projectId, long logTime) throws UnirestException, IOException {
 
         Insight insight = new Insight();
         ObjectMapper objectMapper = new ObjectMapper();
@@ -181,9 +181,10 @@ public class DocGenService {
         action.setEntityVersion(entityVersion);
     }
 
-    private String idGenerator(int instanceId,  int wfId, String logTime) {
-        return new StringBuilder(String.valueOf(instanceId)).append("-")
-                .append(wfId).append("-")
-                .append(!StringUtils.isEmpty(logTime) ? logTime.trim() : "_noLogTime").toString();
+    private Long idGenerator(int instanceId,  int wfId, long logTime) {
+        String id= new StringBuilder(instanceId)
+                .append(wfId)
+                .append(logTime != 0 ? logTime : "000000").toString();
+        return Long.parseLong(id);
     }
 }
