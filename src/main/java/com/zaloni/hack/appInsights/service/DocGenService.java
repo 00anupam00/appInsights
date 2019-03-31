@@ -21,7 +21,8 @@ import java.util.Map;
 @Service
 public class DocGenService {
 
-    public Insight getEditLogWFExecuteEntries(String url,int numOfEntries, String startTime, String endTime) throws Exception {
+    public List<Insight> getEditLogWFExecuteEntries(String url,int numOfEntries, int currentPage, String startTime, String endTime) throws Exception {
+        List<Insight> insights = new ArrayList<>();
         try(FileWriter fw = new FileWriter("testout.txt")) {
             HttpResponse<String> loginResponse = Unirest.post(url + "/bedrock-app/services/rest/login")
                     .header("Content-Type", "application/json")
@@ -34,7 +35,8 @@ public class DocGenService {
                     .header("Content-Type", "application/json")
                     .header("cache-control", "no-cache")
                     .header("Postman-Token", "a4ab4067-8650-4d5b-91b9-c496bd267bce")
-                    .body("{\"auditTrail\": {\"userId\": \"\",\"logTime\": null,\"logType\": \"EXECUTE\",\"auditTrailFields\": []},\"dateFilter\": {\"fromDateTime\": \"\",\"toDateTime\": \"\"},\"page\": {\"currentPage\": 1,\"chunkSize\": " + numOfEntries + ",\"sortBy\": \"logTime\",\"sortOrder\": \"DESC\"}}")
+                    .body("{\"auditTrail\": {\"userId\": \"\",\"logTime\": null,\"logType\": \"EXECUTE\",\"auditTrailFields\": []},\"dateFilter\": {\"fromDateTime\": \"\",\"toDateTime\": \"\"},\"page\": {\"currentPage\": " + currentPage + ",\"chunkSize\": " + numOfEntries + ",\"sortBy\": \"logTime\",\"sortOrder\": \"DESC\"}}")
+
                     .asString();
             //System.out.println("######## Raw response:" + rawResponse.getBody());
 
@@ -69,14 +71,13 @@ public class DocGenService {
                 insight.setProjectId(projectId);
                 insight.setExecutedBy(executedBy);
                 insight.setLogTime(logTime.toString());//TODO: Decide the format
+                insights.add(insight);
                 fw.write("######## Insight Detail: " + insight + "\n\n=============================\n\n");
-
-                return insight;
             }
         }catch(Exception e){
             e.printStackTrace();
         }
-        return new Insight();
+        return insights;
     }
 
     private Insight fetchWFDetail(String url, int instanceId, int projectId, long logTime) throws UnirestException, IOException {
@@ -95,8 +96,8 @@ public class DocGenService {
         }
 
         Map<Object, Object> responseObject = objectMapper.readValue(response.getBody(), new TypeReference<Map<Object, Object>>(){});
-        System.out.println("#### WF details " + objectMapper.writeValueAsString(responseObject));
-        System.out.println("#### WF ID payload:" + objectMapper.writeValueAsString(responseObject.get("result")));
+        //System.out.println("#### WF details " + objectMapper.writeValueAsString(responseObject));
+        //System.out.println("#### WF ID payload:" + objectMapper.writeValueAsString(responseObject.get("result")));
         String wfIDResponse = objectMapper.writeValueAsString(responseObject.get("result"));
         if(wfIDResponse == null || wfIDResponse.isEmpty()){
             return null;
@@ -106,7 +107,7 @@ public class DocGenService {
         String wfIdString = objectMapper.writeValueAsString(wfIdMap.get("wfId"));
         if(wfIdString == null || wfIdString.isEmpty()) return null;
         int wfId = Integer.parseInt(wfIdString);
-        System.out.println("#### WF ID:" + objectMapper.writeValueAsString(wfIdMap.get("wfId")));
+        //System.out.println("#### WF ID:" + objectMapper.writeValueAsString(wfIdMap.get("wfId")));
         String wfName = objectMapper.writeValueAsString(wfIdMap.get("wfName"));
         String wfStatus = objectMapper.writeValueAsString(wfIdMap.get("wfStatus")).toUpperCase();
 
@@ -127,12 +128,12 @@ public class DocGenService {
 
         responseObject = objectMapper.readValue(wfResponse.getBody(), new TypeReference<Map<Object, Object>>(){});
         String wfDetailsResponse = objectMapper.writeValueAsString(responseObject.get("result"));
-        System.out.println("####### WF DETAILS:"+ wfDetailsResponse);
+        //System.out.println("####### WF DETAILS:"+ wfDetailsResponse);
         Map<Object, Object> wfDetailsMap = objectMapper.readValue(wfDetailsResponse, new TypeReference<Map<Object, Object>>(){});
 
         String stepList = objectMapper.writeValueAsString(wfDetailsMap.get("stepList"));
 
-        System.out.println("####### STEP DETAILS:"+ stepList);
+        //System.out.println("####### STEP DETAILS:"+ stepList);
 
         List<Object> steps = objectMapper.readValue(stepList, new TypeReference<List<Object>>(){});
 

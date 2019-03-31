@@ -9,12 +9,16 @@ import org.springframework.data.elasticsearch.annotations.FieldType;
 import java.util.List;
 import java.util.StringJoiner;
 
-@Document(indexName = "insights", type = "app_insights")
+@Document(indexName = "hack19", type = "app_insights")
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class Insight {
 
+    //TODO: We must update not add to the index based on instanceID
     @Id
-    private Long insightId;
+    private String id;
+
+    @Field
+    private long insightId;
 
     @Field(type = FieldType.Text)
     private ZdpFeature zdpFeature= ZdpFeature.WORKFLOW;
@@ -48,11 +52,11 @@ public class Insight {
     @Field(type = FieldType.Nested, includeInParent = true)
     private List<Cluster> cluster;
 
-    public Long getInsightId() {
+    public long getInsightId() {
         return insightId;
     }
 
-    public void setInsightId(Long insightId) {
+    public void setInsightId(long insightId) {
         this.insightId = insightId;
     }
 
