@@ -68,6 +68,9 @@ public class Action {
     }
 
     public String getEntityName() {
+        if(entityName!=null) {
+            entityName = entityName.replace("\"","");
+        }
         return entityName;
     }
 

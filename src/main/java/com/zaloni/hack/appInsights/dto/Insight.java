@@ -9,12 +9,16 @@ import org.springframework.data.elasticsearch.annotations.FieldType;
 import java.util.List;
 import java.util.StringJoiner;
 
-@Document(indexName = "insights", type = "app_insights")
+@Document(indexName = "testindex", type = "app_insights")
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class Insight {
 
+    //TODO: We must update not add to the index based on instanceID
     @Id
-    private Long insightId;
+    private String id;
+
+    @Field
+    private long insightId;
 
     @Field(type = FieldType.Text)
     private ZdpFeature zdpFeature= ZdpFeature.WORKFLOW;
@@ -35,7 +39,7 @@ public class Insight {
     @Field
     private String endTime;
     @Field
-    private String totalExectuionTime;
+    private long totalExectuionTime;
     @Field
     private boolean impersonation;
     @Field
@@ -48,11 +52,11 @@ public class Insight {
     @Field(type = FieldType.Nested, includeInParent = true)
     private List<Cluster> cluster;
 
-    public Long getInsightId() {
+    public long getInsightId() {
         return insightId;
     }
 
-    public void setInsightId(Long insightId) {
+    public void setInsightId(long insightId) {
         this.insightId = insightId;
     }
 
@@ -128,11 +132,11 @@ public class Insight {
         this.endTime = endTime;
     }
 
-    public String getTotalExectuionTime() {
+    public long getTotalExectuionTime() {
         return totalExectuionTime;
     }
 
-    public void setTotalExectuionTime(String totalExectuionTime) {
+    public void setTotalExectuionTime(long totalExectuionTime) {
         this.totalExectuionTime = totalExectuionTime;
     }
 
@@ -174,6 +178,15 @@ public class Insight {
 
     public void setCluster(List<Cluster> cluster) {
         this.cluster = cluster;
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public Insight setId(String id) {
+        this.id = id;
+        return this;
     }
 
     @Override
