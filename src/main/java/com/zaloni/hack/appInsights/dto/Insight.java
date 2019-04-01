@@ -9,7 +9,7 @@ import org.springframework.data.elasticsearch.annotations.FieldType;
 import java.util.List;
 import java.util.StringJoiner;
 
-@Document(indexName = "hack19", type = "app_insights")
+@Document(indexName = "testindex", type = "app_insights")
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class Insight {
 
@@ -39,7 +39,7 @@ public class Insight {
     @Field
     private String endTime;
     @Field
-    private String totalExectuionTime;
+    private long totalExectuionTime;
     @Field
     private boolean impersonation;
     @Field
@@ -132,11 +132,11 @@ public class Insight {
         this.endTime = endTime;
     }
 
-    public String getTotalExectuionTime() {
+    public long getTotalExectuionTime() {
         return totalExectuionTime;
     }
 
-    public void setTotalExectuionTime(String totalExectuionTime) {
+    public void setTotalExectuionTime(long totalExectuionTime) {
         this.totalExectuionTime = totalExectuionTime;
     }
 
@@ -178,6 +178,15 @@ public class Insight {
 
     public void setCluster(List<Cluster> cluster) {
         this.cluster = cluster;
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public Insight setId(String id) {
+        this.id = id;
+        return this;
     }
 
     @Override

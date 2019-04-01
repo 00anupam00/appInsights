@@ -6,21 +6,28 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mashape.unirest.http.HttpResponse;
 import com.mashape.unirest.http.Unirest;
 import com.mashape.unirest.http.exceptions.UnirestException;
-import com.zaloni.hack.appInsights.constants.ZDPUrls;
-import com.zaloni.hack.appInsights.dto.*;
+import com.zaloni.hack.appInsights.dto.Action;
+import com.zaloni.hack.appInsights.dto.AuditTrail;
+import com.zaloni.hack.appInsights.dto.AuditTrailField;
+import com.zaloni.hack.appInsights.dto.Insight;
 import com.zaloni.hack.appInsights.util.JSONAPIResponse;
 import org.joda.time.DateTime;
 import org.springframework.stereotype.Service;
-import org.springframework.util.StringUtils;
 
 import java.io.FileWriter;
 import java.io.IOException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
 @Service
-public class DocGenService implements ZDPUrls {
+public class DocGenService {
+
+    String ZDP_LOGIN_URL = "/bedrock-app/services/rest/login";
+    String ZDP_AUDIT_LOG_URLS = "/bedrock-app/services/rest/admin/auditTypes/log/search";
 
     public List<Insight> getEditLogWFExecuteEntries(String url,int numOfEntries, int currentPage, String startTime, String endTime) throws Exception {
         List<Insight> insights = new ArrayList<>();
@@ -73,7 +80,7 @@ public class DocGenService implements ZDPUrls {
                 insight.setExecutedBy(executedBy);
                 insight.setLogTime(logTime.toString());//TODO: Decide the format
                 insights.add(insight);
-                fw.write("######## Insight Detail: " + insight + "\n\n=============================\n\n");
+                //fw.write("######## Insight Detail: " + insight + "\n\n=============================\n\n");
             }
         }catch(Exception e){
             e.printStackTrace();
@@ -81,7 +88,7 @@ public class DocGenService implements ZDPUrls {
         return insights;
     }
 
-    private Insight fetchWFDetail(String url, int instanceId, int projectId, long logTime) throws UnirestException, IOException {
+    private Insight fetchWFDetail(String url, int instanceId, int projectId, long logTime) throws UnirestException, IOException, ParseException {
 
         Insight insight = new Insight();
         ObjectMapper objectMapper = new ObjectMapper();
@@ -109,16 +116,49 @@ public class DocGenService implements ZDPUrls {
         if(wfIdString == null || wfIdString.isEmpty()) return null;
         int wfId = Integer.parseInt(wfIdString);
         //System.out.println("#### WF ID:" + objectMapper.writeValueAsString(wfIdMap.get("wfId")));
-        String wfName = objectMapper.writeValueAsString(wfIdMap.get("wfName"));
+        String wfName = objectMapper.writeValueAsString(wfIdMap.get("wfName")).replace("\"", "");
         String wfStatus = objectMapper.writeValueAsString(wfIdMap.get("wfStatus")).toUpperCase();
 
+        //fetch start time of 'Start' action
+        //fetch end time of 'End' action
+        String wfStartTime = null;
+        String wfEndTime = null;
+        String listActionStatusString = objectMapper.writeValueAsString(wfIdMap.get("list"));
+        List<Object> statusActions = objectMapper.readValue(listActionStatusString, new TypeReference<List<Object>>(){});
+        for(Object actionStatus : statusActions){
+            Map<Object, Object> stepActionMap = objectMapper.readValue(objectMapper.writeValueAsString(actionStatus), new TypeReference<Map<Object, Object>>(){});
+            String actionName = objectMapper.writeValueAsString(stepActionMap.get("stepType")).replace("\"", "");
+            String startTime = objectMapper.writeValueAsString(stepActionMap.get("startDate"));
+            //System.out.println("###### action, start: "+ actionName + ", " + startTime);
+            String endTime = objectMapper.writeValueAsString(stepActionMap.get("endDate"));
+            //System.out.println("###### action, stop: " + actionName + ", " + endTime);
+            if(actionName.equalsIgnoreCase("start")){
+                wfStartTime = objectMapper.writeValueAsString(stepActionMap.get("startDate")).replace("\"", "");
+                //System.out.println("###### Start action:" + wfStartTime);
+            } else if(actionName.equalsIgnoreCase("stop")){
+                wfEndTime = objectMapper.writeValueAsString(stepActionMap.get("endDate")).replace("\"", "");
+                //System.out.println("###### Stop action:" + wfEndTime);
+            }
+        }
+        SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy HH:mm:ss");
+        //sdf.setTimeZone(TimeZone.getTimeZone("Asia/Kolkata"));
+        java.util.Date formatedStartDate = sdf.parse(wfStartTime);
+        java.util.Date formatedEndDate = formatedStartDate;//incase, there is no end time for failed WFs, the start time and end time should be same
+        if(wfEndTime != null && !wfEndTime.isEmpty()){
+            formatedEndDate = sdf.parse(wfEndTime);
+        }
+
+        long wfStartDateTime = formatedStartDate.getTime();
+        long wfEndDateTime = formatedEndDate.getTime();
+        long executionTimeSeconds = (wfEndDateTime - wfStartDateTime)/1000;
+
+        insight.setTotalExectuionTime(executionTimeSeconds);
         insight.setWfId(wfId);
-        insight.setWfName(wfName);
-        insight.setStatus(wfStatus);
-
-        insight.setInsightId(idGenerator(instanceId, wfId, logTime));
-
-
+        insight.setWfName(wfName.replace("\"",""));
+        insight.setStatus(wfStatus.replace("\"",""));
+        long uuid = idGenerator(instanceId, wfId, logTime);
+        insight.setInsightId(uuid);
+        insight.setId(String.valueOf(uuid));
 
         //Get action and entity details
 
@@ -131,6 +171,7 @@ public class DocGenService implements ZDPUrls {
         String wfDetailsResponse = objectMapper.writeValueAsString(responseObject.get("result"));
         //System.out.println("####### WF DETAILS:"+ wfDetailsResponse);
         Map<Object, Object> wfDetailsMap = objectMapper.readValue(wfDetailsResponse, new TypeReference<Map<Object, Object>>(){});
+        if(wfDetailsMap == null) return null;
 
         String stepList = objectMapper.writeValueAsString(wfDetailsMap.get("stepList"));
 
@@ -142,8 +183,10 @@ public class DocGenService implements ZDPUrls {
         for(Object step : steps){
             String stepDetailString = objectMapper.writeValueAsString(step);
             Map<Object, Object> stepDetail = objectMapper.readValue(stepDetailString, new TypeReference<Map<Object, Object>>(){});
+            String currentActionName = objectMapper.writeValueAsString(stepDetail.get("stepType")).replace("\"","");
+            if(currentActionName.equalsIgnoreCase("null") || currentActionName.equalsIgnoreCase("start") || currentActionName.equalsIgnoreCase("stop")) continue;
             Action action = new Action();
-            action.setActionName(objectMapper.writeValueAsString(stepDetail.get("stepType")));
+            action.setActionName(currentActionName);
             action.setActionId(objectMapper.writeValueAsString(stepDetail.get("actionId")));
             //TODO: action.setActionStartTime()
             //TODO: action.endData();
