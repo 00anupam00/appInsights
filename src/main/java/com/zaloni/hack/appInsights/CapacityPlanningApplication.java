@@ -4,6 +4,7 @@ import com.zaloni.hack.appInsights.dto.Insight;
 import com.zaloni.hack.appInsights.service.DocGenService;
 import com.zaloni.hack.appInsights.service.ESService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.boot.SpringApplication;
@@ -18,6 +19,9 @@ public class CapacityPlanningApplication implements ApplicationRunner {
 
     @Autowired
     DocGenService docGen;
+
+    @Value("${zdp_url}")
+    String zdp_url;
 
 	public static void main(String[] args) {SpringApplication.run(CapacityPlanningApplication.class, args);}
 
